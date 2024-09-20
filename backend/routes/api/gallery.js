@@ -1,7 +1,8 @@
-const { Router } = require("express");
+/* const { router } = require("express");
+const app = express();
 const artModel = require("../../models/artModel");
 
-router.get("/", async (req, res) => {
+app.get("/", async (req, res) => {
   try {
     const artList = await artModel
       .find()
@@ -14,3 +15,4 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+ */
