@@ -13,6 +13,7 @@ const cors = require("cors");
 const errorHandler = require("./middleware/error_handler");
 const itemController = require("./controllers/itemController");
 const artModel = require("./models/artModel");
+const authRoute = require("./routes/api/auth");
 const galleryRoute = require("./routes/api/gallery");
 /* cors, cookieparser, other imports */
 

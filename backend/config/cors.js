@@ -10,4 +10,4 @@ const corsOptions = {
   },
 };
 // Checks if origin matches allowed origin
-module.exports = corsOptions;
+module.exports = { corsOptions };

@@ -1,8 +1,6 @@
 const express = require("express");
-const router = express.Router();
-const Art = require("../models/artModel");
-
-router.get("/gallery", async (req, res) => {
+const artModel = require("../models/artModel");
+async function displayGallery(req, res) {
   try {
     artModel
       .find()
@@ -15,7 +13,7 @@ router.get("/gallery", async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
-});
+}
 
 /* router.get("/gallery/:id", async (req, res) => {
   try {
@@ -29,4 +27,4 @@ router.get("/gallery", async (req, res) => {
   }
 }); */
 
-module.exports = router;
+module.exports = { displayGallery };
