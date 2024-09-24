@@ -1,27 +1,27 @@
 require("dotenv").config();
-require("./config/database");
-const { MongoClient } = require("mongodb").MongoClient;
 const express = require("express");
 const app = express();
 const ports = process.env.PORT || 3000;
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-const corsOptions = require("./config/cors");
-const connectDB = require("./config/database");
-const credentials = require("./middleware/credentials");
 const cors = require("cors");
 const errorHandler = require("./middleware/error_handler");
-const itemController = require("./controllers/itemController");
 const artModel = require("./models/artModel");
-const authRoute = require("./routes/api/auth");
-const galleryRoute = require("./routes/api/gallery");
+const path = require("path");
+const corsOptions = require("./config/cors");
+const credentials = require("./middleware/credentials");
+const connectDB = require("./config/database");
 /* cors, cookieparser, other imports */
-
-app.use("/api/gallery", galleryRoute);
+connectDB();
+app.use("/static", express.static(path.join(__dirname, "public")));
+app.use(credentials);
+app.use(express.json());
+app.use(cookieParser()); // cookie middleware
+app.use(errorHandler); // error handler (very basic)
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
-/* app.get("/gallery", (req, res) => {
+app.get("/gallery", (req, res) => {
   artModel
     .find()
     .lean()
@@ -29,17 +29,19 @@ app.get("/", (req, res) => {
     .then((result) => {
       res.send(result);
     });
-}); */
-app.use(express.json());
-app.use(cookieParser()); // cookie middleware
-app.use(errorHandler); // error handler (very basic)
+}); // for demonstrative purposes only
 app.use("/api/auth", require("./routes/api/auth")); // authenticated routes
 app.all("*", (req, res) => {
+  res.status(404);
   // default false endpoint rerouter
-  res.sendStatus(404);
+  if (req.accepts("json")) {
+    res.json({ error: "404 Not Found" });
+  } else {
+    res.type("text").send("404 Not Found");
+  }
 });
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors(corsOptions));
 mongoose
   .connect(process.env.DATABASE_URI, {
     dbName: "mevn_gallery",
@@ -60,7 +62,7 @@ mongoose.connection.once("open", () => {
   console.log("Mongoose is connected");
   app.listen(ports, () => {
     console.log(`App is listening at http://localhost:${ports}`);
-    console.log(Object.keys(mongoose.connection.collections));
+    console.log("server.js.53", Object.keys(mongoose.connection.collections));
   });
   let artDict = [];
   artModel
@@ -69,7 +71,7 @@ mongoose.connection.once("open", () => {
     .exec()
     .then((result) => {
       let artDict = result;
-      console.log(artDict);
+      console.log("server.js.62", artDict);
     });
 });
 /*

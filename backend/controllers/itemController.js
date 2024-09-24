@@ -1,15 +1,14 @@
 const express = require("express");
 const artModel = require("../models/artModel");
-async function displayGallery(req, res) {
+async function displayGallery(req, res, next) {
   try {
     artModel
       .find()
-      .lean()
-      .exec()
+      .lean() // ignore hydrating
+      .exec() // await
       .then((result) => {
-        const artDict = result;
+        res.json(result);
       });
-    res.json(result);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
