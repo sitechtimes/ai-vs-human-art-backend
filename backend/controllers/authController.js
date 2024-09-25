@@ -132,7 +132,7 @@ async function refresh(req, res) {
     const accessToken = jwt.sign(
       { id: decoded.id },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: "1800s" }
+      { expiresIn: "1800s" } // a bit short innit?
     );
 
     res.json({ access_token: accessToken });

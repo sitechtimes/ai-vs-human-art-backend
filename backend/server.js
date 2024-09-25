@@ -11,6 +11,7 @@ const corsOptions = require("./config/cors");
 const credentials = require("./middleware/credentials");
 const connectDB = require("./config/database");
 const jwt = require("./middleware/jwtAuth");
+const routeMiddleware = require("./routes/api/auth");
 /* cors, cookieparser, other imports */
 connectDB();
 app.use(jwt);
@@ -21,7 +22,7 @@ app.use(credentials);
 app.use(express.json());
 app.use(cookieParser()); // cookie middleware
 app.use(errorHandler); // error handler (very basic)
-app.use("/api/auth", require("./routes/api/auth.js"));
+app.use(routeMiddleware);
 app.get("/", (req, res) => {
   res.send("Hello World");
 });
