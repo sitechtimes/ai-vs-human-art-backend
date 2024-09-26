@@ -40,6 +40,7 @@ const UserSchema = Schema(
   },
   {
     virtuals: {
+      // things not stored in mongodb
       full_name: {
         get() {
           return this.first_name + " " + this.last_name;
@@ -48,12 +49,12 @@ const UserSchema = Schema(
 
       id: {
         get() {
-          return this._id;
+          return this._id; // being a virtual might be wonky with this code
         },
       },
     },
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
   }
 );
-
-module.exports = mongoose.model("User", UserSchema);
+const mevn_auth = mongoose.connection.useDb("mevn_auth");
+module.exports = mevn_auth.model("User", UserSchema);

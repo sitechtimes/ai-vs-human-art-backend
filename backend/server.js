@@ -14,18 +14,19 @@ const jwt = require("./middleware/jwtAuth");
 const routeMiddleware = require("./routes/api/auth");
 /* cors, cookieparser, other imports */
 connectDB();
+
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 app.use(jwt);
 app.use(express.urlencoded({ extended: false }));
 app.use(cors(corsOptions));
 app.use("/static", express.static(path.join(__dirname, "public")));
 app.use(credentials);
-app.use(express.json());
+app.use(express.json()); // json parser middleware
 app.use(cookieParser()); // cookie middleware
 app.use(errorHandler); // error handler (very basic)
-app.use(routeMiddleware);
-app.get("/", (req, res) => {
-  res.send("Hello World");
-});
+app.use("/api/auth", routeMiddleware);
 app.all("*", (req, res) => {
   res.status(404);
   // default false endpoint rerouter
@@ -36,9 +37,7 @@ app.all("*", (req, res) => {
   }
 });
 mongoose
-  .connect(process.env.DATABASE_URI, {
-    dbName: "mevn_gallery",
-  })
+  .connect(process.env.DATABASE_URI)
   .then(() => {
     console.log("Connected to Database");
   })
