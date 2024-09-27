@@ -48,13 +48,11 @@ async function login(req, res) {
 
   const user = await User.findOne({ email }).exec();
 
-  if (!user)
-    return res.status(401).json({ message: "Email or password is incorrect" });
+  if (!user) return res.status(401).json({ message: "Invalid fields" });
 
   const match = await bcrypt.compare(password, user.password);
 
-  if (!match)
-    return res.status(401).json({ message: "Email or password is incorrect" });
+  if (!match) return res.status(401).json({ message: "Invalid Credentials" });
 
   const accessToken = jwt.sign(
     {

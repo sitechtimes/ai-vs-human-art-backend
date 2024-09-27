@@ -4,16 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "server": "nodemon server.js --ignore '../frontend/'",
-    "start:frontend": "npm run serve --prefix '../frontend/'",
-    "dev": "concurrently \"npm run server\" \"npm run start:frontend\""
+    "server": "nodemon server.js --ignore '../frontend/'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.1.1",
-    "concurrently": "^9.0.1",
+    "cloudinary": "^2.5.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
