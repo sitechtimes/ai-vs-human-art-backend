@@ -35,6 +35,11 @@ const UserSchema = Schema(
       required: true,
       min: 6,
     },
+    role: {
+      type: String,
+      enum: ["user", "admin"], // enum = role limiter
+      default: "user",
+    },
 
     refresh_token: String,
   },
