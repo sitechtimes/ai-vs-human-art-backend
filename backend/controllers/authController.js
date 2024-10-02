@@ -2,8 +2,15 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 async function register(req, res) {
-  const { username, email, first_name, last_name, password, password_confirm } =
-    req.body;
+  const {
+    username,
+    email,
+    first_name,
+    last_name,
+    password,
+    password_confirm,
+    role,
+  } = req.body;
 
   if (
     !username ||
@@ -22,9 +29,13 @@ async function register(req, res) {
   const userExists = await User.exists({ email }).exec(); // exec before create
 
   if (userExists) return res.sendStatus(409);
-
+  if (role && role !== "admin") {
+    return res.status(422).json({ message: "Invalid role" });
+  }
   try {
     hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUserRole = role === "admin" ? "admin" : "user";
 
     await User.create({
       email,
@@ -32,6 +43,7 @@ async function register(req, res) {
       password: hashedPassword,
       first_name,
       last_name,
+      role: newUserRole, // Use the determined role here
     });
 
     return res.sendStatus(201);
@@ -44,11 +56,16 @@ async function login(req, res) {
   const { email, password } = req.body;
 
   if (!email || !password)
-    return res.status(422).json({ message: "Invalid fields" });
+    return res
+      .status(422)
+      .json({ message: "Invalid fields. Email and Password are Required" });
 
   const user = await User.findOne({ email }).exec();
 
-  if (!user) return res.status(401).json({ message: "Invalid fields" });
+  if (!user)
+    return res
+      .status(404)
+      .json({ message: "Account not found. Try registering." });
 
   const match = await bcrypt.compare(password, user.password);
 
@@ -111,7 +128,7 @@ async function logout(req, res) {
     sameSite: "None",
     secure: true,
   });
-  res.sendStatus(204);
+  res.status(200).json({ message: "Successfully logged out" });
 }
 
 async function refresh(req, res) {
