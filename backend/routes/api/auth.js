@@ -4,7 +4,6 @@ const authController = require("../../controllers/authController");
 const authMiddleware = require("../../middleware/auth");
 const itemController = require("../../controllers/itemController");
 const adminMiddleware = require("../../middleware/admin");
-router.get("/gallery", itemController.displayGallery);
 
 router.post("/register", authController.register);
 

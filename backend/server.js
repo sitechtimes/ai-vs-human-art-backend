@@ -11,7 +11,8 @@ const corsOptions = require("./config/cors");
 const credentials = require("./middleware/credentials");
 const connectDB = require("./config/database");
 const jwt = require("./middleware/jwtAuth");
-const routeMiddleware = require("./routes/api/auth");
+const apiRoutes = require("./routes/api/auth");
+const itemsRoutes = require("./routes/api/items");
 /* cors, cookieparser, other imports */
 connectDB();
 
@@ -26,7 +27,8 @@ app.use(credentials);
 app.use(express.json()); // json parser middleware
 app.use(cookieParser()); // cookie middleware
 app.use(errorHandler); // error handler (very basic)
-app.use("/api/auth", routeMiddleware);
+app.use("/api/auth", apiRoutes);
+app.use("/items", itemsRoutes);
 app.all("*", (req, res) => {
   res.status(404);
   // default false endpoint rerouter
