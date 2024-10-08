@@ -1,15 +1,5 @@
-const cloudinary = require("cloudinary").v2;
-const multer = require("multer");
 const artModel = require("../models/artModel");
-const multer = require("multer");
-const storage = multer.memoryStorage(); // store image in memory
-const upload = multer({ storage: storage });
-cloudinary.config({
-  cloud_name: process.env.CLOUD_NAME,
-  api_key: process.env.API_KEY,
-  api_secret: process.env.API_SECRET,
-});
-
+const cloudinarySet = require("../config/storage");
 let artDict = [];
 const fetchArtData = async () => {
   // separate function for safety purposes
@@ -25,35 +15,49 @@ async function displayGallery(req, res) {
   try {
     res.json(artDict);
   } catch (error) {
+    console.error("Error displaying gallery:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 }
 async function uploadImage(req, res) {
   const { type } = req.body;
-
-  if (!type) {
-    return res.status(422).json({ message: "Invalid fields" });
-  }
   let folderName;
+
+  // Determine the folder name based on user input
   switch (type) {
     case "ai":
       folderName = "ai-art";
       break;
-    case "product":
+    case "human":
       folderName = "human-art";
       break;
-    /*     default:
-      folderName = 'uploads';   -- folderName is mandatory*/
+    default:
+      return res.status(400).json({ message: "Invalid type" });
+  }
+  if (!type) {
+    return res.status(422).json({ message: "Invalid fields" });
   }
 
   try {
-    const result = await cloudinary.uploader.upload(req.file.path, {
-      folder: folderName,
-    });
-    res.json({ imageUrl: result.secure_url });
+    const result = await cloudinarySet.cloudinary.uploader.upload_stream(
+      { folder: folderName },
+      (error, result) => {
+        if (error) {
+          return res
+            .status(500)
+            .json({ message: "Error uploading image", error: error.message });
+        }
+        return res.status(200).json({
+          message: "Image uploaded successfully",
+          url: result.secure_url,
+        });
+      }
+    );
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: "Error uploading image to Cloudinary" });
+    return res
+      .status(500)
+      .json({ message: "Error uploading image", error: error.message });
   }
 }
 module.exports = { displayGallery, uploadImage };
