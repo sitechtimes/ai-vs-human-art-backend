@@ -1,5 +1,5 @@
 const artModel = require("../models/artModel");
-const cloudinarySet = require("../config/storage");
+const cloudConfig = require("../config/storage");
 let artDict = [];
 const fetchArtData = async () => {
   // separate function for safety purposes
@@ -37,22 +37,23 @@ async function uploadImage(req, res) {
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
   try {
-    const result = await cloudinarySet.cloudinary.uploader.upload_stream(
-      { folder: folderName },
-      (error, result) => {
-        if (error) {
-          return res
-            .status(500)
-            .json({ message: "Error uploading image", error: error.message });
+    cloudConfig.cloudinary.uploader
+      .upload_stream(
+        { resource_type: "auto", folder: folderName },
+        (error, result) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Upload failed", details: error });
+          }
+          res.json({ url: result.secure_url });
         }
-        return res.status(200).json({
-          message: "Image uploaded successfully",
-          url: result.secure_url,
-        });
-      }
-    );
+      )
+      .end(req.file.buffer);
   } catch (error) {
     console.error(error);
     return res
