@@ -5,8 +5,6 @@ async function register(req, res) {
   const {
     username,
     email,
-    first_name,
-    last_name,
     password,
     password_confirm,
     role,
@@ -17,8 +15,7 @@ async function register(req, res) {
     !email ||
     !password ||
     !password_confirm ||
-    !first_name ||
-    !last_name
+
   ) {
     return res.status(422).json({ message: "Invalid fields" });
   }
@@ -41,8 +38,6 @@ async function register(req, res) {
       email,
       username,
       password: hashedPassword,
-      first_name,
-      last_name,
       role: newUserRole, // Use the determined role here
     });
 
