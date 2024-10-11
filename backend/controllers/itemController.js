@@ -61,9 +61,11 @@ async function uploadImage(req, res) {
 }
 async function grabImages(req, res) {
   const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
+  const fulldata = req.query.fulldata;
   if (!type) {
     return res.status(400).json({ message: "no type provided" });
   }
+  const pleaseReturnFullData = fulldata === "true";
   let folderName;
   switch (type.toLowerCase()) {
     case "ai":
@@ -78,10 +80,11 @@ async function grabImages(req, res) {
   try {
     const result = await cloudConfig.cloudinary.api.resources({
       type: "upload",
-      prefix: folderName + "/",
-      max_results: 500,
+      prefix: folderName,
     });
-    res.json(result);
+    const folders = await cloudConfig.cloudinary.api.root_folders();
+    const urls = result.resources.map((resource) => resource.secure_url);
+    res.json(pleaseReturnFullData ? result : urls); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
     res.status(500).json({ message: "Failed to retrieve assets" });
