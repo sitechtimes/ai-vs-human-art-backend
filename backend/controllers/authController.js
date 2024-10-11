@@ -2,6 +2,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 async function register(req, res) {
+<<<<<<< Updated upstream
   const {
     username,
     email,
@@ -17,6 +18,11 @@ async function register(req, res) {
     !password_confirm ||
 
   ) {
+=======
+  const { username, email, password, password_confirm, role } = req.body;
+
+  if (!username || !email || !password || !password_confirm) {
+>>>>>>> Stashed changes
     return res.status(422).json({ message: "Invalid fields" });
   }
 
