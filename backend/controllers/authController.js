@@ -2,21 +2,9 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 async function register(req, res) {
-  const {
-    username,
-    email,
-    password,
-    password_confirm,
-    role,
-  } = req.body;
+  const { username, email, password, password_confirm, role } = req.body;
 
-  if (
-    !username ||
-    !email ||
-    !password ||
-    !password_confirm ||
-
-  ) {
+  if (!username || !email || !password || !password_confirm) {
     return res.status(422).json({ message: "Invalid fields" });
   }
 
