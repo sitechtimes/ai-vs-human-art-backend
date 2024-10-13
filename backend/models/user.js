@@ -19,17 +19,6 @@ const UserSchema = Schema(
         (val) => /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(val),
       ],
     },
-
-    first_name: {
-      type: String,
-      required: true,
-    },
-
-    last_name: {
-      type: String,
-      required: true,
-    },
-
     password: {
       type: String,
       required: true,
@@ -46,12 +35,6 @@ const UserSchema = Schema(
   {
     virtuals: {
       // things not stored in mongodb
-      full_name: {
-        get() {
-          return this.first_name + " " + this.last_name;
-        },
-      },
-
       id: {
         get() {
           return this._id; // being a virtual might be wonky with this code
