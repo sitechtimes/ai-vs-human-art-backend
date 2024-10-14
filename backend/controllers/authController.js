@@ -2,14 +2,11 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 async function register(req, res) {
-  const { username, email, password, password_confirm, role } = req.body;
+  const { username, email, password, role } = req.body;
 
-  if (!username || !email || !password || !password_confirm) {
+  if (!username || !email || !password) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-
-  if (password !== password_confirm)
-    return res.status(422).json({ message: "Passwords do not match" });
 
   const userExists = await User.exists({ email }).exec(); // exec before create
 
@@ -38,17 +35,11 @@ async function register(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
-  if (!email || !password)
-    return res
-      .status(422)
-      .json({ message: "Invalid fields. Email and Password are Required" });
+  if (!email || !password) return res.status(422).json({ message: "Invalid fields. Email and Password are Required" });
 
   const user = await User.findOne({ email }).exec();
 
-  if (!user)
-    return res
-      .status(404)
-      .json({ message: "Account not found. Try registering." });
+  if (!user) return res.status(404).json({ message: "Account not found. Try registering." });
 
   const match = await bcrypt.compare(password, user.password);
 
