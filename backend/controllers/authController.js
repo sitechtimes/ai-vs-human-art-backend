@@ -35,11 +35,17 @@ async function register(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
-  if (!email || !password) return res.status(422).json({ message: "Invalid fields. Email and Password are Required" });
+  if (!email || !password)
+    return res
+      .status(422)
+      .json({ message: "Invalid fields. Email and Password are Required" });
 
   const user = await User.findOne({ email }).exec();
 
-  if (!user) return res.status(404).json({ message: "Account not found. Try registering." });
+  if (!user)
+    return res
+      .status(404)
+      .json({ message: "Account not found. Try registering." });
 
   const match = await bcrypt.compare(password, user.password);
 
@@ -74,7 +80,7 @@ async function login(req, res) {
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
-  res.json({ access_token: accessToken });
+  res.json({ access_token: accessToken, user });
 }
 
 async function logout(req, res) {
