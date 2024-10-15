@@ -8,3 +8,4 @@ const mevn_gallery = mongoose.connection.useDb("mevn_gallery");
 module.exports = mevn_gallery.model("art", artSchema);
 
 // https://stackoverflow.com/questions/7230953/what-are-mongoose-nodejs-pluralization-rules
+// currently unused

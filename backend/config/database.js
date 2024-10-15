@@ -6,5 +6,5 @@ async function connect() {
     console.log(error);
   }
 }
-
+// mongoose config middleware
 module.exports = connect;
