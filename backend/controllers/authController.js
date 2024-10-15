@@ -8,7 +8,7 @@ async function register(req, res) {
     return res.status(422).json({ message: "Invalid fields" });
   }
 
-  const userExists = await User.exists({ email }).exec(); // exec before create
+  const userExists = await User.exists({ email }).exec(); // note -- exec before create, checks if user exists
 
   if (userExists) return res.sendStatus(409);
   if (role && role !== "admin") {
@@ -17,13 +17,13 @@ async function register(req, res) {
   try {
     hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUserRole = role === "admin" ? "admin" : "user";
+    const newUserRole = role === "admin" ? "admin" : "user"; // assignemnt === condition ? true : false
 
     await User.create({
       email,
       username,
       password: hashedPassword,
-      role: newUserRole, // Use the determined role here
+      role: newUserRole,
     });
 
     return res.sendStatus(201);
@@ -71,10 +71,11 @@ async function login(req, res) {
     }
   );
 
-  user.refresh_token = refreshToken;
-  await user.save();
+  user.refresh_token = refreshToken; // sets user refresh token to refresh token to be compared to later
+  await user.save(); // saves user
 
   res.cookie("refresh_token", refreshToken, {
+    // sets response cookie refrsh_token to the signed refresh token created
     httpOnly: true,
     sameSite: "None",
     secure: true,
@@ -85,25 +86,26 @@ async function login(req, res) {
 
 async function logout(req, res) {
   const cookies = req.cookies;
-
-  if (!cookies.refresh_token) return res.sendStatus(204);
-
   const refreshToken = cookies.refresh_token;
-  const user = await User.findOne({ refresh_token: refreshToken }).exec();
+  if (!refreshToken) return res.sendStatus(204); // if there is no refresh token, respond wiht nothing
+
+  const user = await User.findOne({ refresh_token: refreshToken }).exec(); // look for user based on refresh token
 
   if (!user) {
     res.clearCookie("refresh_token", {
-      httpOnly: true,
-      sameSite: "None",
-      secure: true,
+      // clears refresh token if user or if not user
+      httpOnly: true, // cookie never reaches js
+      sameSite: "None", // no public suffix
+      secure: true, // encrypted https protocol
     });
     return res.sendStatus(204);
   }
 
-  user.refresh_token = null;
-  await user.save();
+  user.refresh_token = null; // if there is a user with a refresh_token, set it to null. on mongoDB you can see that if a user is logged out their token is set to "null"
+  await user.save(); // save user
 
   res.clearCookie("refresh_token", {
+    // save http protocal cookie
     httpOnly: true,
     sameSite: "None",
     secure: true,
@@ -113,15 +115,15 @@ async function logout(req, res) {
 
 async function refresh(req, res) {
   const cookies = req.cookies;
-  if (!cookies.refresh_token) return res.sendStatus(401);
-
   const refreshToken = cookies.refresh_token;
+  if (!refreshToken) return res.sendStatus(401);
 
-  const user = await User.findOne({ refresh_token: refreshToken }).exec();
+  const user = await User.findOne({ refresh_token: refreshToken }).exec(); // exec == await with function
 
   if (!user) return res.sendStatus(403);
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
+    // creates new access token on basis that refresh token is matched
     if (err || user.id !== decoded.id) return res.sendStatus(403);
 
     const accessToken = jwt.sign(
