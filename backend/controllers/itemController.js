@@ -21,6 +21,7 @@ async function displayGallery(req, res) {
 }
 async function uploadImage(req, res) {
   const { type } = req.body;
+  const { link } = req.body;
   let folderName;
   switch (type) {
     case "ai":
@@ -41,7 +42,7 @@ async function uploadImage(req, res) {
   try {
     cloudConfig.cloudinary.uploader
       .upload_stream(
-        { resource_type: "auto", folder: folderName },
+        { resource_type: "auto", folder: folderName, tags: link },
         (error, result) => {
           if (error) {
             return res
