@@ -136,10 +136,15 @@ async function refresh(req, res) {
   });
 }
 
-async function user(req, res) {
+async function self(req, res) {
   const user = req.user;
 
   return res.status(200).json(user);
 }
 
-module.exports = { register, login, logout, refresh, user };
+async function user(req, res) {
+  const name = req.params["username"];
+
+  return res.status(200);
+}
+module.exports = { register, login, logout, refresh, self, user };
