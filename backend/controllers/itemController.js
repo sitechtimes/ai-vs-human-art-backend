@@ -61,7 +61,7 @@ async function uploadImage(req, res) {
   }
 }
 async function grabImages(req, res) {
-  const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
+  const type = req.params.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
   const fulldata = req.query.fulldata;
   if (!type) {
     return res.status(400).json({ message: "no type provided" });

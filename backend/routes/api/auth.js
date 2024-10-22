@@ -14,7 +14,7 @@ router.post("/refresh", authController.refresh);
 
 router.get("/self/", authMiddleware, authController.self);
 
-router.get("/users/:username", authController.user);
+router.get("/users/:username", authMiddleware, authController.user);
 
 router.get("/admin", adminMiddleware, (req, res) => {
   res.json({ message: "Admin Test" });

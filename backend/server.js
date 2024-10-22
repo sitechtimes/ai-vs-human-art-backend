@@ -51,10 +51,11 @@ mongoose.connection.on(
   "error",
   console.error.bind(console, "MongoDB connection error:")
 );
-mongoose.connection.once("open", () => {
+mongoose.connection.once("open", async () => {
   console.log("Mongoose is connected");
   app.listen(ports, () => {
     console.log(`App is listening at http://localhost:${ports}`);
-    console.log("server.js.53", Object.keys(mongoose.connection.collections));
   });
+  const databases = await mongoose.connection.db.admin().listDatabases();
+  console.log("Databases:", databases.databases);
 });

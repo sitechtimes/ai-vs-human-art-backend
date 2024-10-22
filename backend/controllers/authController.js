@@ -143,8 +143,22 @@ async function self(req, res) {
 }
 
 async function user(req, res) {
-  const name = req.params["username"];
-
-  return res.status(200);
+  const findThisUser = req.params.username;
+  if (!findThisUser) {
+    return res.status(422).json({ message: "Please provide a username" });
+  }
+  console.log(findThisUser); // test lmao
+  try {
+    const user = await User.findOne(
+      { username: findThisUser },
+      { username: 1, profile_picture: 1 }
+    );
+    if (!user) {
+      return res.status(404).json({ message: "No username found." });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
 }
 module.exports = { register, login, logout, refresh, self, user };

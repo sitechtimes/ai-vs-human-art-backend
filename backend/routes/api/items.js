@@ -12,6 +12,6 @@ router.post(
   cloudConfig.upload.single("image"),
   itemController.uploadImage
 );
-router.get("/gallery", itemController.grabImages); // no admin middleware -- anyone should be able to view these images. this can be changed also
+router.get("/gallery/:type", itemController.grabImages); // no admin middleware -- anyone should be able to view these images. this can be changed also
 // switched from parameters to queries
 module.exports = router;
