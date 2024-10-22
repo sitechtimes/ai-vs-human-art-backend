@@ -8,7 +8,7 @@ nodemon -- for hot-updating servers. Mongoose, Express, Vue  (duh.).
 
 ### tutorials
 
-MEVN Stacck Tutorial by Martial Coding
+MEVN Stacck Tutorial by Martial Coding -- Github User TuralHasanov11
 
 ### About the Dev
 
