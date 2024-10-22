@@ -81,7 +81,7 @@ async function login(req, res) {
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
-  res.json({ access_token: accessToken });
+  res.json({ access_token: accessToken, user });
 }
 
 async function logout(req, res) {
