@@ -14,6 +14,11 @@ async function register(req, res) {
   if (role && role !== "admin") {
     return res.status(422).json({ message: "Invalid role" });
   }
+  if (username.length < 4) {
+    return res
+      .status(422)
+      .json({ message: "Usernames should be 4 characters or longer" });
+  }
   try {
     hashedPassword = await bcrypt.hash(password, 10);
 
@@ -35,11 +40,17 @@ async function register(req, res) {
 async function login(req, res) {
   const { email, password } = req.body;
 
-  if (!email || !password) return res.status(422).json({ message: "Invalid fields. Email and Password are Required" });
+  if (!email || !password)
+    return res
+      .status(422)
+      .json({ message: "Invalid fields. Email and Password are Required" });
 
   const user = await User.findOne({ email }).exec();
 
-  if (!user) return res.status(404).json({ message: "Account not found. Try registering." });
+  if (!user)
+    return res
+      .status(404)
+      .json({ message: "Account not found. Try registering." });
 
   const match = await bcrypt.compare(password, user.password);
 
@@ -147,7 +158,10 @@ async function user(req, res) {
   }
   console.log(findThisUser); // test lmao
   try {
-    const user = await User.findOne({ username: findThisUser }, { username: 1, profile_picture: 1 });
+    const user = await User.findOne(
+      { username: findThisUser },
+      { username: 1, profile_picture: 1 }
+    );
     if (!user) {
       return res.status(404).json({ message: "No username found." });
     }

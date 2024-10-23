@@ -1,5 +1,6 @@
 const artModel = require("../models/artModel");
 const cloudConfig = require("../config/storage");
+const User = require("../models/user");
 let artDict = [];
 const fetchArtData = async () => {
   // separate function for safety purposes
@@ -60,6 +61,46 @@ async function uploadImage(req, res) {
       .json({ message: "Error uploading image", error: error.message });
   }
 }
+async function uploadProfilePicture(req, res) {
+  try {
+    cloudConfig.cloudinary.uploader
+      .upload_stream(
+        {
+          resource_type: "auto",
+          folder: "profile-pictures",
+          transformation: [
+            {
+              width: 800,
+              height: 800,
+              crop: "limit",
+              quality: "auto",
+              fetch_format: "auto",
+            },
+          ],
+        },
+        (error, result) => {
+          const userId = req.body.userId;
+          const user = User.findByIdAndUpdate(
+            // may have to make entire cloudinaryt function await and set to result
+            userId,
+            { profilePicture: result.secure_url },
+            { new: true }
+          );
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Upload failed", details: error });
+          }
+        }
+      )
+      .end(req.file.buffer);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error uploading image", error: error.message });
+  }
+}
 async function grabImages(req, res) {
   const type = req.params.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
   const fulldata = req.query.fulldata;
@@ -91,4 +132,9 @@ async function grabImages(req, res) {
     res.status(500).json({ message: "Failed to retrieve assets" });
   }
 }
-module.exports = { displayGallery, uploadImage, grabImages };
+module.exports = {
+  displayGallery,
+  uploadImage,
+  grabImages,
+  uploadProfilePicture,
+};
