@@ -6,6 +6,7 @@ const fetchArtData = async () => {
   // separate function for safety purposes
   try {
     artDict = await artModel.find().lean(); // lean ignores hydrating. could include exec if necessary to self Await
+    // what if.. instead of .lean().. it was called.. .fe!n()... hahahahaha
   } catch (error) {
     console.error("Error fetching art data:", error);
   }
@@ -124,12 +125,13 @@ async function grabImages(req, res) {
   }
   try {
     const result = await cloudConfig.cloudinary.api.resources({
+      // cloudinary search? Nah
       type: "upload",
       prefix: folderName,
     });
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    res.json(pleaseReturnFullData ? result : urls); // ternary operator is lit
+    res.json(pleaseReturnFullData ? result : urls); // ternary operator is lit.. condition ? true : false
   } catch (error) {
     console.error("Error fetching assets:", error);
     res.status(500).json({ message: "Failed to retrieve assets" });
