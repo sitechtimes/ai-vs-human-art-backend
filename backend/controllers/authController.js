@@ -15,7 +15,7 @@ async function register(req, res) {
     return res.status(422).json({ message: "Invalid role" });
   }
   try {
-    hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUserRole = role === "admin" ? "admin" : "user"; // assignemnt === condition ? true : false
 
