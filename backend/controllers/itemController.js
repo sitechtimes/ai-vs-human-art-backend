@@ -78,13 +78,16 @@ async function uploadProfilePicture(req, res) {
             },
           ],
         },
-        (error, result) => {
-          const userId = req.body.userId;
-          const user = User.findByIdAndUpdate(
-            // may have to make entire cloudinaryt function await and set to result
-            userId,
-            { profilePicture: result.secure_url },
+        async (error, result) => {
+          const userID = req.user._id;
+          const updatedUser = await User.findByIdAndUpdate(
+            userID,
+            { profile_picture: result.secure_url },
             { new: true }
+          );
+          res.json(
+            { url: result.secure_url },
+            { message: "Profile picture successfully changed." }
           );
           if (error) {
             return res
