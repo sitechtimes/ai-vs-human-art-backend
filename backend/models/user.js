@@ -30,7 +30,11 @@ const UserSchema = Schema(
       enum: ["user", "admin"], // enum = role limiter
       default: "user",
     },
-
+    profile_picture: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/dbrjbu4kt/image/upload/v1729521317/human-art/gllhjacrwvj9zfftk08d.jpg",
+    },
     refresh_token: String,
   },
   {

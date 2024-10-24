@@ -14,6 +14,11 @@ async function register(req, res) {
   if (role && role !== "admin") {
     return res.status(422).json({ message: "Invalid role" });
   }
+  if (username.length < 4) {
+    return res
+      .status(422)
+      .json({ message: "Usernames should be 4 characters or longer" });
+  }
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -81,7 +86,11 @@ async function login(req, res) {
     secure: true,
     maxAge: 24 * 60 * 60 * 1000,
   });
-  res.json({ access_token: accessToken });
+
+  {
+    const { password, ...returnUser } = user._doc;
+    res.json({ access_token: accessToken, user: returnUser });
+  }
 }
 
 async function logout(req, res) {
@@ -136,10 +145,29 @@ async function refresh(req, res) {
   });
 }
 
-async function user(req, res) {
+async function self(req, res) {
   const user = req.user;
 
   return res.status(200).json(user);
 }
 
-module.exports = { register, login, logout, refresh, user };
+async function user(req, res) {
+  const findThisUser = req.params.username;
+  if (!findThisUser) {
+    return res.status(422).json({ message: "Please provide a username" });
+  }
+  console.log(findThisUser); // test lmao
+  try {
+    const user = await User.findOne(
+      { username: findThisUser },
+      { username: 1, profile_picture: 1 }
+    );
+    if (!user) {
+      return res.status(404).json({ message: "No username found." });
+    }
+    return res.status(200).json(user);
+  } catch (error) {
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+module.exports = { register, login, logout, refresh, self, user };
