@@ -44,7 +44,20 @@ async function uploadImage(req, res) {
   try {
     cloudConfig.cloudinary.uploader
       .upload_stream(
-        { resource_type: "auto", folder: folderName, tags: link },
+        {
+          resource_type: "auto",
+          folder: folderName,
+          tags: link,
+          transformation: [
+            {
+              width: 800,
+              height: 800,
+              crop: "limit",
+              quality: "auto",
+              fetch_format: "auto",
+            },
+          ],
+        },
         (error, result) => {
           if (error) {
             return res
@@ -80,11 +93,11 @@ async function uploadProfilePicture(req, res) {
           ],
         },
         async (error, result) => {
-          const userID = req.user._id;
+          const userID = req.user._id; // takes users own ID from middleware
           const updatedUser = await User.findByIdAndUpdate(
             userID,
             { profile_picture: result.secure_url },
-            { new: true }
+            { new: true } // returns new user
           );
           res.json(
             { url: result.secure_url },
