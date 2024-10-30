@@ -20,5 +20,6 @@ router.post(
   itemController.uploadProfilePicture
 );
 router.get("/gallery/:type", itemController.grabImages); // no admin middleware -- anyone should be able to view these images. this can be changed also
+router.get("/random", itemController.grabRandomImage);
 // switched from parameters to queries
 module.exports = router;

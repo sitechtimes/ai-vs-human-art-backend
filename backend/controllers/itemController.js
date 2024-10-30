@@ -150,9 +150,41 @@ async function grabImages(req, res) {
     res.status(500).json({ message: "Failed to retrieve assets" });
   }
 }
+
+async function grabRandomImage(req, res) {
+  const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
+  if (!type) {
+    return res.status(400).json({ message: "no type provided" });
+  }
+  let folderName;
+  switch (type.toLowerCase()) {
+    case "ai":
+      folderName = "ai-art";
+      break;
+    case "human":
+      folderName = "human-art";
+      break;
+    default:
+      return res.status(400).json({ message: "Invalid type" });
+  }
+  try {
+    const result = await cloudConfig.cloudinary.api.resources({
+      type: "upload",
+      prefix: folderName,
+    });
+    const folders = await cloudConfig.cloudinary.api.root_folders();
+    const urls = result.resources.map((resource) => resource.secure_url);
+    var randomImage = urls[Math.floor(Math.random() * urls.length)];
+    res.json(randomImage); // ternary operator is lit
+  } catch (error) {
+    console.error("Error fetching assets:", error);
+    res.status(500).json({ message: "Failed to retrieve assets" });
+  }
+}
 module.exports = {
   displayGallery,
   uploadImage,
   grabImages,
+  grabRandomImage,
   uploadProfilePicture,
 };
