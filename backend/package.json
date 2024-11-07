@@ -1,12 +1,15 @@
 {
-  "name": "backend",
+  "name": "ai-human-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Extremely easy and organized background for starting MEVN projects -- originally built for the AI vs Humans project",
+  "main": "server.js",
   "scripts": {
     "server": "nodemon server.js --ignore '../frontend/'"
   },
-  "keywords": [],
+  "keywords": [
+    "MEVN",
+    "express"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

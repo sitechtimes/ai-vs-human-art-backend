@@ -1,7 +1,6 @@
 # backend
 
-MEVN STACK for sum website lol idk
-Here you can check package for scripts.
+express & mongoose built on mevn stack
 
 ## Dependencies
 
@@ -13,12 +12,12 @@ dotenv -- .env for secret passwords nyehehe
 express -- JS backend
 jwt -- web token signer
 mongoose -- mongoose
-multer -- image sending middlewrae
+multer -- image sending middleware -- multer-storage-cloudinary has error
 nodemon -- hot server updating
 
 ### tutorials
 
-MEVN Stack Tutorial by Martial Coding -- Github User TuralHasanov11
+MEVN Stack Tutorial by Martial Coding -- Github User TuralHasanov11 -- previous siths project *Lowballd*
 
 ### About the Dev
 

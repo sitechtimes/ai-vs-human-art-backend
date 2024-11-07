@@ -10,7 +10,7 @@ router.post("/login", authController.login);
 
 router.post("/logout", authController.logout);
 
-router.post("/refresh", authController.refresh);
+router.post("/refresh", authController.refresh); // auth middleware should be here and in logout
 
 router.get("/self/", authMiddleware, authController.self);
 
