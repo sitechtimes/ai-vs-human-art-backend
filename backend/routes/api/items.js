@@ -14,6 +14,12 @@ router.post(
   itemController.uploadImage
 );
 router.post(
+  "/upload-stream",
+  adminMiddleware,
+  cloudConfig.upload.array("image"),
+  itemController.uploadManyImages
+);
+router.post(
   "/upload/profile-picture",
   authMiddleware,
   cloudConfig.upload.single("image"),

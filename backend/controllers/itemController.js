@@ -181,10 +181,67 @@ async function grabRandomImage(req, res) {
     res.status(500).json({ message: "Failed to retrieve assets" });
   }
 }
+async function uploadManyImages(req, res) {
+  const { type } = req.body;
+  const { link } = req.body;
+  let folderName;
+  switch (type) {
+    case "ai":
+      folderName = "ai-art";
+      break;
+    case "human":
+      folderName = "human-art";
+      break;
+    default:
+      return res.status(400).json({ message: "Invalid type" });
+  }
+  if (!type) {
+    return res.status(422).json({ message: "Invalid fields" });
+  }
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  try {
+    req.files.map((file) => {
+      cloudConfig.cloudinary.uploader
+        .upload_stream(
+          {
+            resource_type: "auto",
+            folder: folderName,
+            tags: link,
+            transformation: [
+              {
+                width: 800,
+                height: 800,
+                crop: "limit",
+                quality: "auto",
+                fetch_format: "auto",
+              },
+            ],
+          },
+          (error, result) => {
+            if (error) {
+              return res
+                .status(500)
+                .json({ error: "Upload failed", details: error });
+            }
+            res.json({ url: result.secure_url });
+          }
+        )
+        .end(file.buffer);
+    }); // add promise here to allow async code?
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error uploading image", error: error.message });
+  }
+}
 module.exports = {
   displayGallery,
   uploadImage,
   grabImages,
   grabRandomImage,
   uploadProfilePicture,
+  uploadManyImages,
 };
