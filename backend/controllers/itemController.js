@@ -198,9 +198,10 @@ async function uploadManyImages(req, res) {
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-  if (!req.file) {
+  if (!req.files) {
     return res.status(400).json({ error: "No file uploaded" });
   }
+  let imageDict = [];
   try {
     req.files.map((file) => {
       cloudConfig.cloudinary.uploader
@@ -225,11 +226,12 @@ async function uploadManyImages(req, res) {
                 .status(500)
                 .json({ error: "Upload failed", details: error });
             }
-            res.json({ url: result.secure_url });
+            imageDict.push(result.secure_url);
           }
         )
         .end(file.buffer);
-    }); // add promise here to allow async code?
+    });
+    res.json({ imageDict: imageDict });
   } catch (error) {
     console.error(error);
     return res
