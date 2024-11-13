@@ -161,7 +161,7 @@ async function uploadManyImages(req, res) {
   const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : false;
   if (!folderName) return res.status(400).json({ message: "Invalid type" });
 
-  if (!req.files) {
+  if (!req.files || req.files.length === 0) {
     return res.status(400).json({ error: "No file uploaded" });
   }
 
