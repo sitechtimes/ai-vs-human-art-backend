@@ -14,7 +14,7 @@ router.post(
   itemController.uploadImage
 );
 router.post(
-  "/upload-stream",
+  "/upload/array",
   adminMiddleware,
   cloudConfig.upload.array("image"),
   itemController.uploadManyImages

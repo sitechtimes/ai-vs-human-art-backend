@@ -52,7 +52,9 @@ async function uploadImage(req, res) {
         },
         (error, result) => {
           if (error) {
-            return res.status(500).json({ error: "Upload failed", details: error });
+            return res
+              .status(500)
+              .json({ error: "Upload failed", details: error });
           }
           res.json({ url: result.secure_url });
         }
@@ -60,7 +62,9 @@ async function uploadImage(req, res) {
       .end(req.file.buffer);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error uploading image", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error uploading image", error: error.message });
   }
 }
 async function uploadProfilePicture(req, res) {
@@ -87,16 +91,20 @@ async function uploadProfilePicture(req, res) {
             { profile_picture: result.secure_url },
             { new: true } // returns new user
           );
-          res.json({ url: result.secure_url }, { message: "Profile picture successfully changed." });
+          res.json({ url: result.secure_url });
           if (error) {
-            return res.status(500).json({ error: "Upload failed", details: error });
+            return res
+              .status(500)
+              .json({ error: "Upload failed", details: error });
           }
         }
       )
       .end(req.file.buffer);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ message: "Error uploading image", error: error.message });
+    return res
+      .status(500)
+      .json({ message: "Error uploading image", error: error.message });
   }
 }
 
@@ -203,7 +211,9 @@ async function uploadManyImages(req, res) {
     })
     .catch((error) => {
       // there are errors in ba sing se
-      return res.status(500).json({ message: "Error uploading image", error: error.message });
+      return res
+        .status(500)
+        .json({ message: "Error uploading image", error: error.message });
     });
 }
 
