@@ -21,9 +21,7 @@ async function adminMiddleware(req, res, next) {
     }
 
     if (user.role !== "admin") {
-      return res
-        .status(403)
-        .json({ message: "Forbidden: You do not have permission" }); // if 403, role no match
+      return res.status(403).json({ message: "Forbidden: You do not have permission" }); // if 403, role no match
     }
 
     req.user = user; // sets user ti the request user
