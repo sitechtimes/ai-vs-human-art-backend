@@ -21,6 +21,7 @@ async function displayGallery(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
+
 async function uploadImage(req, res) {
   const { type } = req.body;
   const { link } = req.body;
@@ -75,6 +76,7 @@ async function uploadImage(req, res) {
       .json({ message: "Error uploading image", error: error.message });
   }
 }
+
 async function uploadProfilePicture(req, res) {
   try {
     cloudConfig.cloudinary.uploader
@@ -118,6 +120,7 @@ async function uploadProfilePicture(req, res) {
       .json({ message: "Error uploading image", error: error.message });
   }
 }
+
 async function grabImages(req, res) {
   const type = req.params.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
   const fulldata = req.query.fulldata;
@@ -175,6 +178,7 @@ async function grabRandomImage(req, res) {
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
     var randomImage = urls[Math.floor(Math.random() * urls.length)];
+    console.log(randomImage);
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
