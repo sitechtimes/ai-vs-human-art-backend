@@ -21,52 +21,7 @@ async function displayGallery(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
-async function uploadImage(req, res) {
-  const { link, type } = req.body;
 
-  const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : false;
-  if (!folderName) return res.status(400).json({ message: "Invalid type" });
-
-  if (!type) {
-    return res.status(422).json({ message: "Invalid fields" });
-  }
-  if (!req.file) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
-  try {
-    cloudConfig.cloudinary.uploader
-      .upload_stream(
-        {
-          resource_type: "auto",
-          folder: folderName,
-          tags: link,
-          transformation: [
-            {
-              width: 800,
-              height: 800,
-              crop: "limit",
-              quality: "auto",
-              fetch_format: "auto",
-            },
-          ],
-        },
-        (error, result) => {
-          if (error) {
-            return res
-              .status(500)
-              .json({ error: "Upload failed", details: error });
-          }
-          res.json({ url: result.secure_url });
-        }
-      )
-      .end(req.file.buffer);
-  } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ message: "Error uploading image", error: error.message });
-  }
-}
 async function uploadProfilePicture(req, res) {
   try {
     cloudConfig.cloudinary.uploader
@@ -217,9 +172,54 @@ async function uploadManyImages(req, res) {
     });
 }
 
+/* async function uploadImage(req, res) {
+  const { link, type } = req.body;
+
+  const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : false;
+  if (!folderName) return res.status(400).json({ message: "Invalid type" });
+
+  if (!type) {
+    return res.status(422).json({ message: "Invalid fields" });
+  }
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  try {
+    cloudConfig.cloudinary.uploader
+      .upload_stream(
+        {
+          resource_type: "auto",
+          folder: folderName,
+          tags: link,
+          transformation: [
+            {
+              width: 800,
+              height: 800,
+              crop: "limit",
+              quality: "auto",
+              fetch_format: "auto",
+            },
+          ],
+        },
+        (error, result) => {
+          if (error) {
+            return res
+              .status(500)
+              .json({ error: "Upload failed", details: error });
+          }
+          res.json({ url: result.secure_url });
+        }
+      )
+      .end(req.file.buffer);
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ message: "Error uploading image", error: error.message });
+  }
+} */
 module.exports = {
   displayGallery,
-  uploadImage,
   grabImages,
   grabRandomImage,
   uploadProfilePicture,
