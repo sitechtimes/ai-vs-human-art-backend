@@ -7,14 +7,14 @@ const cloudConfig = require("../../config/storage");
 router.get("/test", (req, res) => {
   res.json({ message: "Test" });
 });
-router.post(
-  "/upload",
+/* router.post(
+  "/uploadz",
   adminMiddleware,
   cloudConfig.upload.single("image"),
   itemController.uploadImage
-);
+); */
 router.post(
-  "/upload/array",
+  "/upload",
   adminMiddleware,
   cloudConfig.upload.array("image"),
   itemController.uploadManyImages
