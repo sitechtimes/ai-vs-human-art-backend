@@ -21,7 +21,6 @@ async function displayGallery(req, res) {
     res.status(500).json({ error: "Internal server error" });
   }
 }
-
 async function uploadProfilePicture(req, res) {
   try {
     cloudConfig.cloudinary.uploader
@@ -107,6 +106,7 @@ async function grabRandomImage(req, res) {
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
     var randomImage = urls[Math.floor(Math.random() * urls.length)];
+    console.log(randomImage);
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
