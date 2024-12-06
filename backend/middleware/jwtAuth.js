@@ -14,7 +14,7 @@ function authentication(req, res, next) {
         return next();
       }
 
-      const user = await User.findById(decoded.id) // finds user by id, ignore password, await
+      const user = await User.findById(decoded.objectid) // finds user by id, ignore password, await
         .select({ password: 0, refresh_token: 0 })
         .exec();
 

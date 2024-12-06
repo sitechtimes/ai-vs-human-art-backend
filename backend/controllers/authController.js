@@ -10,7 +10,10 @@ async function register(req, res) {
 
   const userExists = await User.exists({ email }).exec(); // note -- exec before create, checks if user exists
 
-  if (userExists) return res.sendStatus(409);
+  if (userExists)
+    return res
+      .status(409)
+      .json({ message: "This email is already being used by an account" });
   if (role && role !== "admin") {
     return res.status(422).json({ message: "Invalid role" });
   }
@@ -152,21 +155,22 @@ async function self(req, res) {
 }
 
 async function user(req, res) {
-  const findThisUser = req.params.username;
+  const findThisUser = req.params.userid;
   if (!findThisUser) {
-    return res.status(422).json({ message: "Please provide a username" });
+    return res.status(422).json({ message: "Please provide an ID" });
   }
   console.log(findThisUser); // test lmao
   try {
     const user = await User.findOne(
-      { username: findThisUser },
+      { userid: findThisUser },
       { username: 1, profile_picture: 1 }
     );
     if (!user) {
-      return res.status(404).json({ message: "No username found." });
+      return res.status(404).json({ message: "No user found." });
     }
     return res.status(200).json(user);
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
