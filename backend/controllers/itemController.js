@@ -117,11 +117,16 @@ async function grabRandomImage(req, res) {
 async function uploadManyImages(req, res) {
   const { link, type, category } = req.body;
   const categories = ["Realistic", "Anime", "Photography", "Still Life"];
+  if (!(category in categories) || !category){
+    return res.status(422).json({message:"Please choose a valid category"})
+  }
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
 
-  const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : false;
+  const folderName = new Set(["ai", "human", "unscreened"]).has(type)
+    ? type + "-art"
+    : false;
   if (!folderName) return res.status(400).json({ message: "Invalid type" });
 
   if (!req.files || req.files.length === 0) {
@@ -138,7 +143,7 @@ async function uploadManyImages(req, res) {
               {
                 resource_type: "auto",
                 folder: folderName,
-                tags: link,
+                tags: [link, category],
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
