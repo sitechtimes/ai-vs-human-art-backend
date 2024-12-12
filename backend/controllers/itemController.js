@@ -115,11 +115,7 @@ async function grabRandomImage(req, res) {
 }
 
 async function uploadManyImages(req, res) {
-  const { link, type, category } = req.body;
-  const categories = ["Realistic", "Anime", "Photography", "Still Life"];
-  if (!(category in categories) || !category){
-    return res.status(422).json({message:"Please choose a valid category"})
-  }
+  const { link, type } = req.body;
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
@@ -143,7 +139,7 @@ async function uploadManyImages(req, res) {
               {
                 resource_type: "auto",
                 folder: folderName,
-                tags: [link, category],
+                tags: [link],
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
