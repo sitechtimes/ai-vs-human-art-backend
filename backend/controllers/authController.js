@@ -62,6 +62,8 @@ async function login(req, res) {
   const accessToken = jwt.sign(
     {
       id: user.id,
+      role: user.role,
+      userid: user.userid,
     },
     process.env.ACCESS_TOKEN_SECRET,
     {
@@ -72,6 +74,8 @@ async function login(req, res) {
   const refreshToken = jwt.sign(
     {
       id: user.id,
+      role: user.role,
+      userid: user.userid,
     },
     process.env.REFRESH_TOKEN_SECRET,
     {
@@ -92,7 +96,10 @@ async function login(req, res) {
 
   {
     const { password, ...returnUser } = user._doc;
-    res.json({ access_token: accessToken, user: returnUser });
+    res.json({
+      access_token: accessToken,
+      user: returnUser,
+    });
   }
 }
 
