@@ -170,7 +170,7 @@ async function user(req, res) {
   try {
     const user = await User.findOne(
       { userid: findThisUser },
-      { username: 1, profile_picture: 1 }
+      { username: 1, profile_picture: 1, userid: 1 }
     );
     if (!user) {
       return res.status(404).json({ message: "No user found." });
