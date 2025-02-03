@@ -63,16 +63,12 @@ async function uploadProfilePicture(req, res) {
 }
 
 async function grabImages(req, res) {
-  const type = req.params.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
-  if (!type) {
-    return res.status(400).json({ message: "no type provided" });
-  }
+  const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
 
   const fulldata = req.query.fulldata;
   const pleaseReturnFullData = fulldata === "true";
 
-  const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : false;
-  if (!folderName) return res.status(400).json({ message: "Invalid type" });
+  const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : "";
 
   try {
     const result = await cloudConfig.cloudinary.api.resources({
@@ -82,7 +78,7 @@ async function grabImages(req, res) {
     });
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    res.json(pleaseReturnFullData ? result : urls); // ternary operator is lit.. condition ? true : false
+    res.json([pleaseReturnFullData ? result : urls, folderName]); // ternary operator is lit.. condition ? true : false
   } catch (error) {
     console.error("Error fetching assets:", error);
     res.status(500).json({ message: "Failed to retrieve assets" });
@@ -103,7 +99,7 @@ async function grabRandomImage(req, res) {
       type: "upload",
       prefix: folderName,
     });
-    console.log(result.resources.tags);
+    console.log(result.resources);
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
     var randomImage = urls[Math.floor(Math.random() * urls.length)];
@@ -113,13 +109,33 @@ async function grabRandomImage(req, res) {
     res.status(500).json({ message: "Failed to retrieve assets" });
   }
 }
+async function grabImageByTag(req, res) {
+  const tag = req.params.tag;
+  const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
+  if (!type) {
+    return res.status(400).json({ message: "no type provided" });
+  }
+
+  const folderName = new Set(["ai", "human"]).has(type) ? type + "-art" : false;
+  if (!folderName) return res.status(400).json({ message: "Invalid type" });
+
+  try {
+    const result = cloudConfig.cloudinary.url(`${tag}.json`, { type: "list" });
+    console.log(result);
+    res.json(result);
+    /* cloudConfig.cloudinary.api.tags().then((result) => console.log(result)); */
+  } catch (error) {
+    console.error("Error fetching assets:", error);
+    res.status(500).json({ message: "Failed to retrieve assets" });
+  }
+}
 
 async function uploadManyImages(req, res) {
-  const { link, type } = req.body;
+  const { tag, type } = req.body;
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-
+  const tags = link.split(",");
   const folderName = new Set(["ai", "human", "unscreened"]).has(type)
     ? type + "-art"
     : false;
@@ -139,7 +155,7 @@ async function uploadManyImages(req, res) {
               {
                 resource_type: "auto",
                 folder: folderName,
-                tags: [link],
+                tags: [tags],
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
@@ -226,4 +242,5 @@ module.exports = {
   grabRandomImage,
   uploadProfilePicture,
   uploadManyImages,
+  grabImageByTag,
 };
