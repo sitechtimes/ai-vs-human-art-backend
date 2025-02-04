@@ -120,9 +120,12 @@ async function grabImageByTag(req, res) {
   if (!folderName) return res.status(400).json({ message: "Invalid type" });
 
   try {
-    const result = cloudConfig.cloudinary.url(`${tag}.json`, { type: "list" });
-    console.log(result);
-    res.json(result);
+    /* const result = cloudConfig.cloudinary.url(`${tag}.json`, { type: "list" }); */
+    cloudConfig.cloudinary.api
+      .resources_by_tag(`${tag}`)
+      .then((result) =>
+        res.json(result.resources.map((resource) => resource.secure_url))
+      );
     /* cloudConfig.cloudinary.api.tags().then((result) => console.log(result)); */
   } catch (error) {
     console.error("Error fetching assets:", error);
