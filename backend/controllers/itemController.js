@@ -138,7 +138,7 @@ async function uploadManyImages(req, res) {
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-  const tags = link.split(",");
+  const tags = tag.split(",");
   const folderName = new Set(["ai", "human", "unscreened"]).has(type)
     ? type + "-art"
     : false;
