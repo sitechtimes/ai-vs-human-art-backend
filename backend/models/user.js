@@ -35,6 +35,12 @@ const UserSchema = Schema(
       default:
         "https://res.cloudinary.com/dbrjbu4kt/image/upload/v1729521317/human-art/gllhjacrwvj9zfftk08d.jpg",
     },
+    games: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Game",
+      },
+    ],
     refresh_token: String,
   },
   {
