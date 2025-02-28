@@ -4,12 +4,15 @@ const Schema = mongoose.Schema;
 const gameSchema = new Schema({
   right: {
     type: Number,
+    required: true,
   },
   total: {
     type: Number,
+    required: true,
   },
   time: {
     type: Date,
+    required: true,
   },
   user: {
     type: Schema.Types.ObjectId,
