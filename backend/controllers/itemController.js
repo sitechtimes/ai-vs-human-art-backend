@@ -78,7 +78,7 @@ async function grabImages(req, res) {
     });
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    res.json([pleaseReturnFullData ? result : urls, folderName]); // ternary operator is lit.. condition ? true : false
+    res.json([pleaseReturnFullData ? result : urls, folderName, display_name]); // ternary operator is lit.. condition ? true : false
   } catch (error) {
     console.error("Error fetching assets:", error);
     res.status(500).json({ message: "Failed to retrieve assets" });
@@ -134,7 +134,7 @@ async function grabImageByTag(req, res) {
 }
 
 async function uploadManyImages(req, res) {
-  const { tag, type } = req.body;
+  const { tag, type, name } = req.body;
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
@@ -159,6 +159,7 @@ async function uploadManyImages(req, res) {
                 resource_type: "auto",
                 folder: folderName,
                 tags: [tag],
+                display_name: name,
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
