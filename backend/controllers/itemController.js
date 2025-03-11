@@ -75,6 +75,7 @@ async function grabImages(req, res) {
       // cloudinary search? Nah
       type: "upload",
       prefix: folderName,
+      context: true,
     });
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
@@ -87,6 +88,7 @@ async function grabImages(req, res) {
 
 async function grabRandomImage(req, res) {
   const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
+
   if (!type) {
     return res.status(400).json({ message: "no type provided" });
   }
@@ -98,11 +100,13 @@ async function grabRandomImage(req, res) {
     const result = await cloudConfig.cloudinary.api.resources({
       type: "upload",
       prefix: folderName,
+      context: true,
     });
-    console.log(result.resources);
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    var randomImage = urls[Math.floor(Math.random() * urls.length)];
+    console.log(resources.metadata);
+    const randomNum = Math.random();
+    var randomImage = urls[Math.floor(randomNum * urls.length)];
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
