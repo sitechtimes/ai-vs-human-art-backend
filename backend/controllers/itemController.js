@@ -100,15 +100,11 @@ async function grabRandomImage(req, res) {
     const result = await cloudConfig.cloudinary.api.resources({
       type: "upload",
       prefix: folderName,
-      metadata: true,
+      context: true,
     });
-    const folders = await cloudConfig.cloudinary.api.root_folders();
-    const urls = result.resources.map((resource) => resource.secure_url);
-    const meta = result.resources.map((resource) => resource.metadata);
-    const randomNum = Math.random();
-    let randomImage = urls[Math.floor(randomNum * urls.length)];
-    let randomImageMetaData = meta[Math.floor(randomNum * meta.length)];
-    console.log(randomImageMetaData);
+    const resources = result.resources;
+    let randomImage = resources[Math.floor(Math.random() * resources.length)];
+    console.log(randomImage);
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
@@ -144,7 +140,6 @@ async function uploadManyImages(req, res) {
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-  // const tags = tag.split(",");
   const folderName = new Set(["ai", "human", "unscreened"]).has(type)
     ? type + "-art"
     : false;
@@ -165,7 +160,11 @@ async function uploadManyImages(req, res) {
                 resource_type: "auto",
                 folder: folderName,
                 tags: [tag],
-                display_name: name,
+                context: {
+                  custom: {
+                    artist_name: name,
+                  },
+                },
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
