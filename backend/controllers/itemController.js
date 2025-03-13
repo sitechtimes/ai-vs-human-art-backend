@@ -100,13 +100,15 @@ async function grabRandomImage(req, res) {
     const result = await cloudConfig.cloudinary.api.resources({
       type: "upload",
       prefix: folderName,
-      context: true,
+      metadata: true,
     });
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    console.log(resources.metadata);
+    const meta = result.resources.map((resource) => resource.metadata);
     const randomNum = Math.random();
-    var randomImage = urls[Math.floor(randomNum * urls.length)];
+    let randomImage = urls[Math.floor(randomNum * urls.length)];
+    let randomImageMetaData = meta[Math.floor(randomNum * meta.length)];
+    console.log(randomImageMetaData);
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
