@@ -160,11 +160,7 @@ async function uploadManyImages(req, res) {
                 resource_type: "auto",
                 folder: folderName,
                 tags: [tag],
-                context: {
-                  custom: {
-                    artist_name: name,
-                  },
-                },
+                context: `artist_name=${name}`,
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
