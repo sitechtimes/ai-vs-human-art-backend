@@ -41,6 +41,9 @@ const UserSchema = Schema(
         ref: "Game",
       },
     ],
+    highScore: {
+      type: Number,
+    },
     refresh_token: String,
   },
   {
