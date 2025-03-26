@@ -152,15 +152,15 @@ async function uploadManyImages(req, res) {
   const imageDict = [];
   await Promise.all(
     req.files.map(
-      (file) =>
+      (file, index) =>
         new Promise((resolve, reject) => {
           cloudConfig.cloudinary.uploader
             .upload_stream(
               {
                 resource_type: "auto",
                 folder: folderName,
-                tags: [tag],
-                context: `artist_name=${name}`,
+                tags: [tag[index]],
+                context: `artist_name=${name[index]}`,
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
