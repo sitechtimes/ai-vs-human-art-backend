@@ -104,7 +104,6 @@ async function grabRandomImage(req, res) {
     });
     const resources = result.resources;
     let randomImage = resources[Math.floor(Math.random() * resources.length)];
-    console.log(randomImage);
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
