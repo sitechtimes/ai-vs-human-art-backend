@@ -99,7 +99,6 @@ async function grabRandomImage(req, res) {
       type: "upload",
       prefix: folderName,
     });
-    console.log(result.resources);
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
     var randomImage = urls[Math.floor(Math.random() * urls.length)];
