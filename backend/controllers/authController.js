@@ -166,7 +166,7 @@ async function user(req, res) {
   if (!findThisUser) {
     return res.status(422).json({ message: "Please provide an ID" });
   }
-  console.log(findThisUser); // test lmao
+  // console.log(findThisUser); test lmao
   try {
     const user = await User.findOne(
       { userid: findThisUser },
@@ -181,4 +181,34 @@ async function user(req, res) {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
-module.exports = { register, login, logout, refresh, self, user };
+
+async function highScoreUpdate(req, res) {
+  const { newHighScore, userId } = req.body;
+  if (!newHighScore) {
+    return res.status(422).json({ message: "No high score sent." });
+  }
+  if (!userId) {
+    return res.status(422).json({ message: "No user." });
+  }
+  try {
+    const user = await User.findOne(
+      { userid: userId },
+      { username: 1, profile_picture: 1, userid: 1 }
+    );
+    user.highScore = newHighScore;
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error uupdating high score", error: error.message });
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  logout,
+  refresh,
+  self,
+  user,
+  highScoreUpdate,
+};
