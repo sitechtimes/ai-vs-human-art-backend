@@ -199,7 +199,7 @@ async function highScoreUpdate(req, res) {
   } catch (error) {
     return res
       .status(500)
-      .json({ message: "Error uupdating high score", error: error.message });
+      .json({ message: "Error updating high score", error: error.message });
   }
 }
 

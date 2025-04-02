@@ -43,6 +43,7 @@ const UserSchema = Schema(
     ],
     highScore: {
       type: Number,
+      default: "0",
     },
     refresh_token: String,
   },
