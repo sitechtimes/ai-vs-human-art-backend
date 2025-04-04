@@ -75,10 +75,11 @@ async function grabImages(req, res) {
       // cloudinary search? Nah
       type: "upload",
       prefix: folderName,
+      context: true,
     });
     const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    res.json([pleaseReturnFullData ? result : urls, folderName]); // ternary operator is lit.. condition ? true : false
+    res.json([pleaseReturnFullData ? result : urls, folderName, display_name]); // ternary operator is lit.. condition ? true : false
   } catch (error) {
     console.error("Error fetching assets:", error);
     res.status(500).json({ message: "Failed to retrieve assets" });
@@ -87,6 +88,7 @@ async function grabImages(req, res) {
 
 async function grabRandomImage(req, res) {
   const type = req.query.type; // this is based on query instead of a paramter. prioritzed over req.body or req.params
+
   if (!type) {
     return res.status(400).json({ message: "no type provided" });
   }
@@ -98,11 +100,10 @@ async function grabRandomImage(req, res) {
     const result = await cloudConfig.cloudinary.api.resources({
       type: "upload",
       prefix: folderName,
+      context: true,
     });
-    console.log(result.resources);
-    const folders = await cloudConfig.cloudinary.api.root_folders();
-    const urls = result.resources.map((resource) => resource.secure_url);
-    var randomImage = urls[Math.floor(Math.random() * urls.length)];
+    const resources = result.resources;
+    let randomImage = resources[Math.floor(Math.random() * resources.length)];
     res.json(randomImage); // ternary operator is lit
   } catch (error) {
     console.error("Error fetching assets:", error);
@@ -134,11 +135,10 @@ async function grabImageByTag(req, res) {
 }
 
 async function uploadManyImages(req, res) {
-  const { tag, type } = req.body;
+  const { tag, type, name } = req.body;
   if (!type) {
     return res.status(422).json({ message: "Invalid fields" });
   }
-  const tags = link.split(",");
   const folderName = new Set(["ai", "human", "unscreened"]).has(type)
     ? type + "-art"
     : false;
@@ -151,14 +151,15 @@ async function uploadManyImages(req, res) {
   const imageDict = [];
   await Promise.all(
     req.files.map(
-      (file) =>
+      (file, index) =>
         new Promise((resolve, reject) => {
           cloudConfig.cloudinary.uploader
             .upload_stream(
               {
                 resource_type: "auto",
                 folder: folderName,
-                tags: [tags],
+                tags: [tag[index]],
+                context: `artist_name=${name[index]}`,
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {

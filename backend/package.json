@@ -4,7 +4,7 @@
   "description": "Extremely easy and organized background for starting MEVN projects -- originally built for the AI vs Humans project",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon server.js --ignore '../frontend/'"
+    "server": "nodemon server.js"
   },
   "keywords": [
     "MEVN",
