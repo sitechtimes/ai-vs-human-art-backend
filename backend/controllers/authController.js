@@ -2,6 +2,7 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { default: mongoose } = require("mongoose");
+
 async function register(req, res) {
   const { username, email, password, role } = req.body;
 
@@ -42,6 +43,7 @@ async function register(req, res) {
 }
 
 async function login(req, res) {
+  console.log("updatd starte");
   const { email, password } = req.body;
 
   if (!email || !password)
@@ -189,10 +191,8 @@ async function highScoreUpdate(req, res) {
     return res.status(422).json({ message: "Missing field." });
   }
   try {
-    const objectId = mongoose.Types.ObjectId(userId);
-    console.log(objectId instanceof mongoose.Types.ObjectId());
     const user = await User.findOneAndUpdate(
-      { _id: objectId },
+      { _id: new mongoose.Types.ObjectId(userId) },
       { highScore: newHighScore },
       { new: true }
     );
