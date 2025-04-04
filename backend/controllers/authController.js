@@ -1,6 +1,7 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const { default: mongoose } = require("mongoose");
 async function register(req, res) {
   const { username, email, password, role } = req.body;
 
@@ -184,18 +185,25 @@ async function user(req, res) {
 
 async function highScoreUpdate(req, res) {
   const { newHighScore, userId } = req.body;
-  if (!newHighScore) {
-    return res.status(422).json({ message: "No high score sent." });
-  }
-  if (!userId) {
-    return res.status(422).json({ message: "No user." });
+  if (!newHighScore || !userId) {
+    return res.status(422).json({ message: "Missing field." });
   }
   try {
-    const user = await User.findOne(
-      { userid: userId },
-      { username: 1, profile_picture: 1, userid: 1 }
+    const objectId = mongoose.Types.ObjectId(userId);
+    console.log(objectId instanceof mongoose.Types.ObjectId());
+    const user = await User.findOneAndUpdate(
+      { _id: objectId },
+      { highScore: newHighScore },
+      { new: true }
     );
-    user.highScore = newHighScore;
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No user corresponds to sent id." });
+    }
+    return res
+      .status(200)
+      .json({ message: "High score updated successfully.", user });
   } catch (error) {
     return res
       .status(500)
