@@ -12,19 +12,26 @@ async function saveGame(req, res) {
   if (!userId) {
     return res.status(422).json({ message: "No user sent." });
   }
+  try {
+    const user = await User.findOne({
+      _id: new mongoose.Types.ObjectId(`${userId}`),
+    });
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No user corrsponds to sent id." });
+    }
 
-  const user = await User.findOne({ _id: new mongoose.Types.ObjectId(userId) });
-
-  if (!user) {
-    return res.status(404).json({ message: "No user corrsponds to sent id." });
+    await Game.create({
+      right,
+      total,
+      time: Date.now(),
+      user,
+    });
+    return res.sendStatus(201);
+  } catch (error) {
+    return res.status(400).json({ message: "Could not save game" });
   }
-
-  await Game.create({
-    right,
-    total,
-    time: Date.now(),
-    user,
-  });
 }
 
 module.exports = { saveGame };

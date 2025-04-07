@@ -192,7 +192,7 @@ async function highScoreUpdate(req, res) {
   }
   try {
     const user = await User.findOneAndUpdate(
-      { _id: new mongoose.Types.ObjectId(userId) },
+      { _id: new mongoose.Types.ObjectId(`${userId}`) },
       { highScore: newHighScore },
       { new: true }
     );
