@@ -1,6 +1,6 @@
 const Game = require("../models/gameModel");
 const User = require("../models/user");
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
 async function saveGame(req, res) {
   const { right, total, userId } = req.body;
@@ -13,19 +13,17 @@ async function saveGame(req, res) {
     return res.status(422).json({ message: "No user sent." });
   }
   try {
-    const user = await User.findOne({
-      _id: new mongoose.Types.ObjectId(`${userId}`),
-    });
+    const id = new mongoose.Types.ObjectId(`${userId}`);
+    const user = await User.findById(id);
     if (!user) {
       return res
         .status(404)
-        .json({ message: "No user corrsponds to sent id." });
+        .json({ message: "No user corresponds to sent id." });
     }
 
     await Game.create({
       right,
       total,
-      time: Date.now(),
       user,
     });
     return res.sendStatus(201);
