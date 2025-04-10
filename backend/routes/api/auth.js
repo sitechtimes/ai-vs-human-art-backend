@@ -20,6 +20,6 @@ router.get("/admin", adminMiddleware, (req, res) => {
   res.json({ message: "Admin Test" });
 });
 
-router.patch("/highscore", authController.highScoreUpdate);
+router.put("/highscore", authController.highScoreUpdate);
 
 module.exports = router;
