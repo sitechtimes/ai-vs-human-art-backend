@@ -5,6 +5,7 @@ const origins = [
   "http://localhost:3000",
   "http://localhost:5173",
   "https://ai-vs-human-art-backend.onrender.com",
+  "https://ai-v-humans.netlify.app",
   "http://127.0.0.1:5173", //vue
 ];
 module.exports = origins;
