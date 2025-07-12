@@ -77,9 +77,9 @@ async function grabImages(req, res) {
       prefix: folderName,
       context: true,
     });
-    const folders = await cloudConfig.cloudinary.api.root_folders();
+    //const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => resource.secure_url);
-    res.json([pleaseReturnFullData ? result : urls, folderName, display_name]); // ternary operator is lit.. condition ? true : false
+    res.json([pleaseReturnFullData ? result : urls, folderName]); // ternary operator is lit.. condition ? true : false
   } catch (error) {
     console.error("Error fetching assets:", error);
     res.status(500).json({ message: "Failed to retrieve assets" });
