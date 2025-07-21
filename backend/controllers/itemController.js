@@ -78,7 +78,10 @@ async function grabImages(req, res) {
       context: true,
     });
     //const folders = await cloudConfig.cloudinary.api.root_folders();
-    const urls = result.resources.map((resource) => resource.secure_url);
+    const urls = result.resources.map((resource) => ({
+      secure_url: resource.secure_url,
+      context: resource.context,
+    }));
     res.json([pleaseReturnFullData ? result : urls, folderName]); // ternary operator is lit.. condition ? true : false
   } catch (error) {
     console.error("Error fetching assets:", error);
@@ -122,11 +125,14 @@ async function grabImageByTag(req, res) {
 
   try {
     /* const result = cloudConfig.cloudinary.url(`${tag}.json`, { type: "list" }); */
-    cloudConfig.cloudinary.api
-      .resources_by_tag(`${tag}`)
-      .then((result) =>
-        res.json(result.resources.map((resource) => resource.secure_url))
-      );
+    cloudConfig.cloudinary.api.resources_by_tag(`${tag}`).then((result) =>
+      res.json(
+        result.resources.map((resource) => ({
+          secure_url: resource.secure_url,
+          context: resource.context,
+        }))
+      )
+    );
     /* cloudConfig.cloudinary.api.tags().then((result) => console.log(result)); */
   } catch (error) {
     console.error("Error fetching assets:", error);
@@ -144,9 +150,9 @@ async function uploadManyImages(req, res) {
     : false;
   if (!folderName) return res.status(400).json({ message: "Invalid type" });
 
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ error: "No file uploaded" });
-  }
+  // if (!req.files || req.files.length === 0) {
+  //   return res.status(400).json({ error: "No file uploaded" });
+  // } // error
 
   const imageDict = [];
   await Promise.all(
