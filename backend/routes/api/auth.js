@@ -20,4 +20,6 @@ router.get("/admin", adminMiddleware, (req, res) => {
   res.json({ message: "Admin Test" });
 });
 
+router.post("/validate", authController.validateToken);
+
 module.exports = router;

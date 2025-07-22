@@ -8,7 +8,7 @@ async function register(req, res) {
     return res.status(422).json({ message: "Invalid fields" });
   }
 
-  const userExists = await User.exists({ email }).exec(); // note -- exec before create, checks if user exists
+  const userExists = await User.exists({ email }); // note -- exec before create, checks if user exists -- but im already calling async here
 
   if (userExists)
     return res
@@ -48,7 +48,7 @@ async function login(req, res) {
       .status(422)
       .json({ message: "Invalid fields. Email and Password are Required" });
 
-  const user = await User.findOne({ email }).exec();
+  const user = await User.findOne({ email });
 
   if (!user)
     return res
@@ -95,10 +95,9 @@ async function login(req, res) {
   });
 
   {
-    const { password, ...returnUser } = user._doc;
     res.json({
       access_token: accessToken,
-      user: returnUser,
+      user,
     });
   }
 }
@@ -108,7 +107,7 @@ async function logout(req, res) {
   const refreshToken = cookies.refresh_token;
   if (!refreshToken) return res.sendStatus(204); // if there is no refresh token, respond wiht nothing
 
-  const user = await User.findOne({ refresh_token: refreshToken }).exec(); // look for user based on refresh token
+  const user = await User.findOne({ refresh_token: refreshToken }); // look for user based on refresh token
 
   if (!user) {
     res.clearCookie("refresh_token", {
@@ -129,6 +128,7 @@ async function logout(req, res) {
     sameSite: "None",
     secure: true,
   });
+  console.log("User logged out, refresh token cleared");
   res.status(200).json({ message: "Successfully logged out" });
 }
 
@@ -137,22 +137,37 @@ async function refresh(req, res) {
   const refreshToken = cookies.refresh_token;
   if (!refreshToken) return res.sendStatus(401);
 
-  const user = await User.findOne({ refresh_token: refreshToken }).exec(); // exec == await with function
-
-  if (!user) return res.sendStatus(403);
-
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
     // creates new access token on basis that refresh token is matched
-    if (err || user.id !== decoded.id) return res.sendStatus(403);
 
     const accessToken = jwt.sign(
       { id: decoded.id },
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1800s" } // a bit short innit?
     );
-
-    res.json({ access_token: accessToken });
+    res.json(user);
   });
+}
+
+async function validateToken(req, res) {
+  const { accessToken } = req.body;
+  if (!accessToken) {
+    return res.status(401).json({ message: "No token provided" });
+  }
+  jwt.verify(
+    accessToken,
+    process.env.ACCESS_TOKEN_SECRET,
+    async (err, decoded) => {
+      const user = await User.findById(decoded.id);
+      if (err || user.id !== decoded.id)
+        return res.status(403).json({ message: "Invalid token user mismatch" });
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      res.json({ user });
+    }
+  );
 }
 
 async function self(req, res) {
@@ -166,7 +181,6 @@ async function user(req, res) {
   if (!findThisUser) {
     return res.status(422).json({ message: "Please provide an ID" });
   }
-  console.log(findThisUser); // test lmao
   try {
     const user = await User.findOne(
       { userid: findThisUser },
@@ -181,4 +195,12 @@ async function user(req, res) {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
-module.exports = { register, login, logout, refresh, self, user };
+module.exports = {
+  register,
+  login,
+  logout,
+  refresh,
+  self,
+  user,
+  validateToken,
+};
