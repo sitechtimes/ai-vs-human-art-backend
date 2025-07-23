@@ -145,7 +145,7 @@ async function refresh(req, res) {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "1800s" } // a bit short innit?
     );
-    res.json(user);
+    res.json({ accessToken });
   });
 }
 
