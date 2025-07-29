@@ -15,10 +15,10 @@ const gameSchema = new Schema({
     required: true,
     default: Date.now(),
   },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
+  // user: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "User",
+  // },
 });
 
 module.exports = mongoose.model("Game", gameSchema);
