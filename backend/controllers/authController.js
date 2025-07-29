@@ -1,6 +1,8 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const mongoose = require("mongoose");
+
 async function register(req, res) {
   const { username, email, password, role } = req.body;
 
@@ -166,7 +168,7 @@ async function user(req, res) {
   if (!findThisUser) {
     return res.status(422).json({ message: "Please provide an ID" });
   }
-  console.log(findThisUser); // test lmao
+  // console.log(findThisUser); test lmao
   try {
     const user = await User.findOne(
       { userid: findThisUser },
@@ -177,8 +179,43 @@ async function user(req, res) {
     }
     return res.status(200).json(user);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
-module.exports = { register, login, logout, refresh, self, user };
+
+async function highScoreUpdate(req, res) {
+  const { newHighScore, userId } = req.body;
+  if (!newHighScore || !userId) {
+    return res.status(422).json({ message: "Missing field." });
+  }
+  try {
+    const user = await User.findOneAndUpdate(
+      { _id: new mongoose.Types.ObjectId(`${userId}`) },
+      { highScore: newHighScore },
+      { new: true }
+    );
+    if (!user) {
+      return res
+        .status(404)
+        .json({ message: "No user corresponds to sent id." });
+    }
+    return res
+      .status(200)
+      .json({ message: "High score updated successfully.", user });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Error updating high score", error: error.message });
+  }
+}
+
+module.exports = {
+  register,
+  login,
+  logout,
+  refresh,
+  self,
+  user,
+  highScoreUpdate,
+};

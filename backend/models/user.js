@@ -35,6 +35,16 @@ const UserSchema = Schema(
       default:
         "https://res.cloudinary.com/dbrjbu4kt/image/upload/v1729521317/human-art/gllhjacrwvj9zfftk08d.jpg",
     },
+    games: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Game",
+      },
+    ],
+    highScore: {
+      type: Number,
+      default: 0,
+    },
     refresh_token: String,
   },
   {
@@ -54,6 +64,7 @@ const UserSchema = Schema(
     },
   }
 );
+
 UserSchema.plugin(AutoIncrement, { inc_field: "userid" });
 const mevn_auth = mongoose.connection.useDb("mevn_auth");
 module.exports = mevn_auth.model("User", UserSchema);
