@@ -1,5 +1,4 @@
 const Game = require("../models/gameModel");
-const User = require("../models/user");
 const mongoose = require("mongoose");
 
 async function saveGame(req, res) {
