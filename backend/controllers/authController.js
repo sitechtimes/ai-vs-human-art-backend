@@ -227,14 +227,6 @@ module.exports = {
   self,
   user,
   highScoreUpdate,
-};
-module.exports = {
-  register,
-  login,
-  logout,
-  refresh,
-  self,
-  user,
   validateToken,
   cookiePing,
 };
