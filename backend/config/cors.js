@@ -1,6 +1,7 @@
 const allowedOrigins = require("./allowed_origins.js");
 
 const corsOptions = {
+  credentials: true,
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
       callback(null, true);

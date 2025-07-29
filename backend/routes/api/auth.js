@@ -21,5 +21,8 @@ router.get("/admin", adminMiddleware, (req, res) => {
 });
 
 router.put("/highscore", authController.highScoreUpdate);
+router.post("/cookieping", authController.cookiePing);
+
+router.post("/validate", authController.validateToken);
 
 module.exports = router;
