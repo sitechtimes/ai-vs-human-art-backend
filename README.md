@@ -15,12 +15,12 @@ Welcome to the backend for the ai-vs-human-art project.
 
 ```sh
 npm install
-npm run dev
+npm run server
 ```
 
 ## About this Project
 
-This project is an express.,js project built on top of a Mongoose/MongoDB account database and a Cloudinary/Multer image database.
+This project is an express.js project built on top of a Mongoose/MongoDB account database and a Cloudinary/Multer image database.
 
 ## Dependencies/Packages
 
