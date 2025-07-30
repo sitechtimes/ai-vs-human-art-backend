@@ -30,7 +30,7 @@ This project is an express.,js project built on top of a Mongoose/MongoDB accoun
 
 `Multer` -- image sending middleware -- We decided against the use of `multer-storage-cloudinary`
 
-`nodemon` -- hot server updating
+`nodemon` -- hot server updating instead of having to manually update server
 
 ### Encryption
 
@@ -50,4 +50,4 @@ This project is an express.,js project built on top of a Mongoose/MongoDB accoun
 
 - previous siths project [*Lowballd*](https://github.com/staten-island-tech/lowballd-backend)
 
-[^1]: By default this runs the server through node demon and ensures that the project reads the .env file (as opposed to using the dotenv dependency)
+[^1]: By default this runs the server through `nodemon` and ensures that the project reads the .env file through the `--env-file` flag (as opposed to using the `dotenv` dependency)
