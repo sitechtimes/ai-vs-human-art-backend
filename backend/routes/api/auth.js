@@ -20,7 +20,7 @@ router.get("/admin", adminMiddleware, (req, res) => {
   res.json({ message: "Admin Test" });
 });
 
-router.put("/highscore", authController.highScoreUpdate);
+router.patch("/highscore", authController.highScoreUpdate);
 router.post("/cookieping", authController.cookiePing);
 
 router.post("/validate", authController.validateToken);
