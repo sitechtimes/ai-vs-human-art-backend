@@ -4,8 +4,6 @@ const mongoose = require("mongoose");
 async function saveGame(req, res) {
   const { right, total } = req.body;
 
-  console.log(req.body);
-
   if (!right || !total) {
     return res.status(422).json({ message: "Invalid fields" });
   }
