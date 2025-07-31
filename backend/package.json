@@ -4,7 +4,7 @@
   "description": "Extremely easy and organized background for starting MEVN projects -- originally built for the AI vs Humans project",
   "main": "server.js",
   "scripts": {
-    "server": "nodemon --env-file=.env server.js"
+    "server": "nodemon server.js"
   },
   "keywords": [
     "MEVN",
@@ -17,6 +17,7 @@
     "cloudinary": "^2.5.1",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.7.1",
