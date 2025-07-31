@@ -52,6 +52,11 @@ const UserSchema = Schema(
       },
       timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
     },
+    toJSON: {
+      transform: function (doc, ret) {
+        delete ret.password;
+      },
+    },
   }
 );
 UserSchema.plugin(AutoIncrement, { inc_field: "userid" });
