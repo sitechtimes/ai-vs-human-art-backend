@@ -15,8 +15,7 @@ function authentication(req, res, next) {
       }
 
       const user = await User.findById(decoded.objectid) // finds user by id, ignore password, await
-        .select({ password: 0, refresh_token: 0 })
-        .exec();
+        .select({ password: 0, refresh_token: 0 });
 
       if (user) {
         req.user = user.toObject({ getters: true }); // request should contain a user object with virtuals

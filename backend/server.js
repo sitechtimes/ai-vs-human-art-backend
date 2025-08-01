@@ -13,6 +13,7 @@ const connectDB = require("./config/database");
 const jwt = require("./middleware/jwtAuth");
 const apiRoutes = require("./routes/api/auth");
 const itemsRoutes = require("./routes/api/items");
+const gameRoutes = require("./routes/api/game");
 /* cors, cookieparser, other imports */
 connectDB();
 
@@ -29,6 +30,7 @@ app.use(cookieParser()); // cookie middleware
 app.use(errorHandler); // error handler (very basic)
 app.use("/api/auth", apiRoutes);
 app.use("/items", itemsRoutes);
+app.use("/game", gameRoutes);
 app.all("*", (req, res) => {
   res.status(404);
   // default false endpoint rerouter
