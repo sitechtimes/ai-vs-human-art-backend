@@ -38,7 +38,7 @@ async function register(req, res) {
 
     return res.sendStatus(201);
   } catch (error) {
-    return res.status(400).json({ message: "Could not register" });
+    return res.status(400).json({ message: "Could not register", error });
   }
 }
 

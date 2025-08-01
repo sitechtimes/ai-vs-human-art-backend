@@ -1,5 +1,4 @@
 const Game = require("../models/gameModel");
-const mongoose = require("mongoose");
 
 async function saveGame(req, res) {
   const { right, total } = req.body;
@@ -15,7 +14,7 @@ async function saveGame(req, res) {
     });
     return res.sendStatus(201);
   } catch (error) {
-    return res.status(400).json({ message: "Could not save game" });
+    return res.status(400).json({ message: "Could not save game", error });
   }
 }
 
