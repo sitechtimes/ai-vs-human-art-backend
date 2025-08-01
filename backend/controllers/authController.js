@@ -110,11 +110,17 @@ async function logout(req, res) {
   if (!refreshToken) return res.sendStatus(204); // if there is no refresh token, respond wiht nothing
   const user = await User.findOne({ refresh_token: refreshToken }); // look for user based on refresh token
 
-  if (user) {
-    user.refresh_token = null; // if there is a user with a refresh_token, set it to null. on mongoDB you can see that if a user is logged out their token is set to "null"
-    await user.save(); // save user
+  if (!user) {
+    res.clearCookie("refresh_token", {
+      // clears refresh token if user or if not user, save http protocols
+      httpOnly: true, // cookie never reaches js
+      sameSite: "None", // no public suffix
+      secure: true, // encrypted https protocol
+    });
+    return res.sendStatus(204);
   }
-
+  user.refresh_token = null; // if there is a user with a refresh_token, set it to null. on mongoDB you can see that if a user is logged out their token is set to "null"
+  await user.save(); // save user
   res.clearCookie("refresh_token", {
     // clears refresh token if user or if not user, save http protocols
     httpOnly: true, // cookie never reaches js
