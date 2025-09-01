@@ -4,8 +4,8 @@ const origins = [
   "http://localhost:8080",
   "http://localhost:3000",
   "http://localhost:5173",
-  "https://ai-vs-human-art-backend.onrender.com",
-  "https://ai-v-humans.netlify.app",
+  "https://ai-vs-human-art-backend-6fgg.onrender.com/",
+  "https://artagainstthemachine.netlify.app/game",
   "http://127.0.0.1:5173", //vue
 ];
 module.exports = origins;
