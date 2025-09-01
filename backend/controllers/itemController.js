@@ -76,6 +76,7 @@ async function grabImages(req, res) {
       type: "upload",
       prefix: folderName,
       context: true,
+      max_results: 250,
     });
     //const folders = await cloudConfig.cloudinary.api.root_folders();
     const urls = result.resources.map((resource) => ({
