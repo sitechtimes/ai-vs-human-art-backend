@@ -8,11 +8,14 @@ async function saveGame(req, res) {
   }
 
   try {
-    await Game.create({
+    const game = await Game.create({
       right,
       total,
     });
-    return res.sendStatus(201);
+
+    const id = game._id;
+
+    return res.json(id).status(201);
   } catch (error) {
     return res.status(400).json({ message: "Could not save game", error });
   }
