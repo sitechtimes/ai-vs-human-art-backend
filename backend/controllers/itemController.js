@@ -165,7 +165,10 @@ async function uploadManyImages(req, res) {
                 resource_type: "auto",
                 folder: folderName,
                 tags: req.files.length === 1 ? tag : [tag[index]],
-                context: req.files.length === 1 ?  `artist_name=${name}` :`artist_name=${name[index]}` ,
+                context:
+                  req.files.length === 1
+                    ? `artist_name=${name}`
+                    : `artist_name=${name[index]}`,
                 use_asset_folder_as_public_id_prefix: true,
                 transformation: [
                   {
